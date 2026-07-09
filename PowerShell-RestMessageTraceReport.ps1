@@ -66,14 +66,17 @@ switch ($Cloud)
     "Commercial" {
         $TokenEndpoint = "https://login.microsoftonline.com/$TenantId/oauth2/v2.0/token"
         $BaseUrl       = "https://reports.office365.com/ecp/reportingwebservice/reporting.svc"
+        $Scopes = "https://outlook.office365.com/.default"
     }
     "GCC" {
         $TokenEndpoint = "https://login.microsoftonline.com/$TenantId/oauth2/v2.0/token"
         $BaseUrl       = "https://reports.office365.com/ecp/reportingwebservice/reporting.svc"
+        $Scopes = "https://outlook.office365.com/.default"
     }
     "GCCH" {
-        $TokenEndpoint = "https://login.microsoftonline.us/$TenantId/oauth2/v2.0/token"
-        $BaseUrl       = "https://reports.office365.us/ecp/reportingwebservice/reporting.svc"
+        $TokenEndpoint  = "https://login.microsoftonline.us/$TenantId/oauth2/v2.0/token"
+        $BaseUrl        = "https://outlook.office365.us/ecp/reportingwebservice/reporting.svc"
+        $Scopes         = "https://outlook.office365.us/.default"
     }
 }
 
@@ -83,6 +86,7 @@ switch ($Cloud)
 # =============================
 
 $Query = "$BaseUrl/MessageTrace`?\$filter=StartDate eq datetime'$StartDate' and EndDate eq datetime'$EndDate'"
+#$Query = "$BaseUrl/MessageTrace?`$top=5"
 
 $LogFile = "c:\temp\msgtrace_log.txt"
 
@@ -106,7 +110,7 @@ Write-Log "Base URL: $BaseUrl"
 
 $tokenBody = @{
     client_id     = $ClientId
-    scope         = "https://outlook.office365.com/.default"
+    scope         = $Scopes
     client_secret = $ClientSecret
     grant_type    = "client_credentials"
 }
