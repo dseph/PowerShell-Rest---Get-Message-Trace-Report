@@ -1,35 +1,56 @@
 # PowerShell-RestMessageTraceReport.ps1
-#
-# This script demonstrates how to retrieve message trace data via REST API calls to the reporting web service.
-# It uses client credentials flow for authentication and queries message trace data for a specified date range. 
-#
-# Endpoints:
-#   Commercial and GCC: https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace
-#   GCCH:               https://reports.office365.us/ecp/reportingwebservice/reporting.svc/MessageTrace
-# 
-# Reference: https://learn.microsoft.com/en-us/exchange/monitoring/trace-an-email-message/graph-api-message-trace
-# Note: The script is designed for GCCH but can be adapted for Commercial/GCC by changing the endpoints and token URL.  
-# Required Azure permissions: MessageTrace.Read.All (application permission with admin consent)
- 
-# Usage:
-#   1) Update the configuration section with your tenant/app details and desired date range.
-#   2) Run the script in PowerShell. Output will be logged to c:\temp\msgtrace_log.txt and the full JSON response saved to c:\temp\msgtrace_output.json.
-#   3) Review the log and output files for results and troubleshooting. 
-#
-# Required permissions:
-#   MessageTrace.Read.All   - Admin consent needs to be is granted. 
-#
-# Note: A redirect is not needed.
-#
-# To decode a token go here: https://jwt.ms/
 
 <# 
+
 .SYNOPSIS
-    Retrieve message trace data from the reporting web service using raw REST calls. This script:
+---------
+This script demonstrates how to retrieve message trace data via REST API calls to the reporting web service.
+It uses client credentials flow for authentication and queries message trace data for a specified date range. 
  
   - Links:
     - https://learn.microsoft.com/en-us/previous-versions/office/developer/o365-enterprise-developers/jj984342(v=office.15)
     - https://learn.microsoft.com/en-us/previous-versions/office/developer/o365-enterprise-developers/jj984328(v=office.15)
+    - https://learn.microsoft.com/en-us/exchange/monitoring/trace-an-email-message/graph-api-message-trace
+
+.ENDPOINTS
+----------
+    Commercial and GCC: https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace
+    GCCH:               https://reports.office365.us/ecp/reportingwebservice/reporting.svc/MessageTrace
+
+
+ .USSAGE
+ -------
+   1) Update the configuration section with your tenant/app details and desired date range.
+   2) Run the script in PowerShell. Output will be logged to c:\temp\msgtrace_log.txt and the full JSON response saved to c:\temp\msgtrace_output.json.
+   3) Review the log and output files for results and troubleshooting. 
+ 
+.PERMISSIONS
+---------------------
+Application prmissions in Purview:
+    MessageTrace.Read.All   - Admin consent needs to be is granted. 
+
+If you encounter an error stating "No permission to access the report for the organization," it typically indicates that the service principal 
+needs admin permissions.
+
+This error typically occurs in the Microsoft Exchange Online Reporting Web Service when an API app lacks the correct administrator roles. 
+Even if API  permissions are granted, your service principal or app account must be assigned an Exchange Admin, Global Reader, or 
+Security Reader role to successfully pull the data.
+To resolve this issue, you must assign an Exchange Admin role to the service principal object or the account making the API calls. You can 
+do this by following these steps:  
+1.	Navigate to Entra ID: Go to the Microsoft Entra admin center and sign in with an administrative account.  
+2.	Assign a Role:
+o	Navigate to Roles and administrators.
+o	Search for Global Reader, Security Reader, or Exchange Administrator.
+o	Add your Microsoft Entra ID (Azure AD) application as a member/assign the role to the service principal.  
+3.	Verify API Permissions: Ensure your app registration has either ReportingWebService.Read (Delegated) or ReportingWebService.Read.All (Application) 
+    granted under the Office 365 Exchange Online API. [1, 2]
+4.	Get a Fresh Token: Because permission changes can take time to propagate or require a new login, generate a fresh authentication token before 
+    retrying your script or tool. 
+
+Note: A redirect is not needed.
+
+Note: To decode a token go here: https://jwt.ms/
+ 
 #>
 
 <# 
