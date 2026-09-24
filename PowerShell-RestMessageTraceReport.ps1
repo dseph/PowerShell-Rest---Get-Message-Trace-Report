@@ -15,8 +15,7 @@ It uses client credentials flow for authentication and queries message trace dat
 .ENDPOINTS
 ----------
     Commercial and GCC: https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace
-    GCCH:               https://reports.office365.us/ecp/reportingwebservice/reporting.svc/MessageTrace
-
+    GCCH:               https://outlook.office365.us/ecp/reportingwebservice/reporting.svc/reporting.svc/MessageTrace
 
  .USSAGE
  -------
